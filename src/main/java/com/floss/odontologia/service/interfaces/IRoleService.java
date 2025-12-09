@@ -9,6 +9,7 @@ public interface IRoleService {
     //read
     public Role knowRoleByUser(String username);
     public List<Role> getListRoles();
+
     //update
     public String editRole(Role role);
 
