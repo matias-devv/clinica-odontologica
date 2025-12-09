@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -36,6 +38,14 @@ public class AppointmentController {
     @RequestMapping("/appointments-today")
     public int getAppointmentNumberToday(@RequestBody Dentist dentist){
         return iAppointmentService.getAppointmentNumberToday(dentist);
+    }
+
+    @RequestMapping("/hours/{date}/{selectedDay}")
+    public List<LocalTime> getHoursOfDentist(
+                                             @PathVariable LocalDate date,
+                                             @RequestBody Dentist dentist,
+                                             @PathVariable String selectedDay){
+        return iAppointmentService.getHoursOfDentist(date, dentist, selectedDay);
     }
 
     @RequestMapping("/edit")

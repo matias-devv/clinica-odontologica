@@ -11,6 +11,7 @@ public interface IScheduleService {
 
     //read
     public Schedule getScheduleById(Long id);
+
     public List<Schedule> getAllSchedules();
 
     public void editSchedule(Schedule schedule);

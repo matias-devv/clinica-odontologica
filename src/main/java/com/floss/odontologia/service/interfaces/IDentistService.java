@@ -14,8 +14,11 @@ public interface IDentistService {
 
     //read
     public Dentist getDentistById(Long id);
+
     public List<Dentist> getAllDentists();
+
     public List<Appointment> getAppointmentsByDentist(Dentist dentist);
+
     public List<Patient> getPatientsByDentist(Dentist dentist);
 
     //edit

@@ -11,13 +11,18 @@ public interface IPatientService {
 
     //read
     public Patient getPatient(String dni);
+
     public List<Patient> getPatients();
+
     public int getTotalOfPatients();
+
     public List<Patient> getPatientsWithInsurance();
+
     public List<Patient> getPatientsWithoutInsurance();
 
     //update
     public String editPatient(Patient patient);
+
     //delete
     public String deletePatient(Long id);
 

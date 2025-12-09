@@ -8,7 +8,9 @@ public interface ISpecialityService {
 
     //read
     public Speciality getSpecialityByName(String name);
+
     public List<Speciality> getAllSpecialities();
+
     //update
     public void editSpeciality(Speciality speciality);
 }

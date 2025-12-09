@@ -14,6 +14,7 @@ public class Schedule {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    private String dayWeek;
     private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;
