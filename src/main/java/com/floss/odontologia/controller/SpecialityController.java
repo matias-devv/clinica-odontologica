@@ -15,11 +15,13 @@ public class SpecialityController {
     private ISpecialityService iSpecialityService;
 
     @GetMapping("/find/{name}")
+    @ResponseBody
     public Speciality findById(@PathVariable String name) {
         return iSpecialityService.getSpecialityByName(name);
     }
 
     @GetMapping("/find-all")
+    @ResponseBody
     public List<Speciality> findAll() {
         return iSpecialityService.getAllSpecialities();
     }

@@ -1,8 +1,10 @@
 package com.floss.odontologia.controller;
 
+import com.floss.odontologia.dto.response.PatientDTO;
 import com.floss.odontologia.model.Patient;
 import com.floss.odontologia.service.interfaces.IPatientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,13 +22,23 @@ public class PatientController {
     }
 
     @GetMapping("/find/{id}")
-    public Patient findPatient(@PathVariable String dni){
-        return iPatientService.getPatient(dni);
+    public ResponseEntity<?> findPatient(@PathVariable String dni){
+
+        PatientDTO dto = iPatientService.getPatient(dni);
+        if(dto != null){
+            return ResponseEntity.status(200).body(dto);
+        }
+        return ResponseEntity.status(400).body("The patient was not found");
     }
 
     @GetMapping("/find-all")
-    public List<Patient> findAllPatients(){
-        return iPatientService.getPatients();
+    public ResponseEntity<?> findAllPatients(){
+
+        List<PatientDTO> listDto = iPatientService.getPatients();
+        if( listDto != null){
+            return ResponseEntity.status(200).body(listDto);
+        }
+        return ResponseEntity.status(404).body("The list of patients is empty");
     }
 
     @GetMapping("/total-patients")
@@ -35,13 +47,23 @@ public class PatientController {
     }
 
     @GetMapping("/with-insurance")
-    public List<Patient> withInsurance(){
-        return iPatientService.getPatientsWithInsurance();
+    public ResponseEntity<?> withInsurance(){
+
+        List<PatientDTO> listDto = iPatientService.getPatientsWithInsurance();
+        if( listDto != null){
+            return ResponseEntity.status(200).body(listDto);
+        }
+        return ResponseEntity.status(404).body("The list of patients with insurance is empty");
     }
 
     @GetMapping("/without-insurance")
-    public List<Patient> withoutInsurance(){
-        return iPatientService.getPatientsWithoutInsurance();
+    public ResponseEntity<?> withoutInsurance(){
+
+        List<PatientDTO> listDto = iPatientService.getPatientsWithoutInsurance();
+        if( listDto != null){
+            return ResponseEntity.status(200).body(listDto);
+        }
+        return ResponseEntity.status(404).body("The list of patients without insurance is empty");
     }
 
     @PutMapping("/edit")

@@ -15,6 +15,7 @@ public class RoleController {
     private IRoleService iRoleService;
 
     @GetMapping("/find-all")
+    @ResponseBody
     public List<Role> findAllRoles(){
         return iRoleService.getListRoles();
     }

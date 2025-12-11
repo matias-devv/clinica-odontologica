@@ -7,5 +7,4 @@ public interface IUserService {
         //create
         public String createUser(User user);
 
-        //validacion oauth
 }

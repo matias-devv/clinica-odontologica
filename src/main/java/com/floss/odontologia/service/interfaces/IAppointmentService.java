@@ -1,5 +1,6 @@
 package com.floss.odontologia.service.interfaces;
 
+import com.floss.odontologia.dto.response.AppointmentDTO;
 import com.floss.odontologia.model.Appointment;
 import com.floss.odontologia.model.Dentist;
 
@@ -13,9 +14,9 @@ public interface IAppointmentService {
     public String createAppo(Appointment appointment);
 
     //read
-    public Appointment getAppointmentById(Long id);
+    public AppointmentDTO getAppointmentById(Long id);
 
-    public List<Appointment> getAllAppointments();
+    public List<AppointmentDTO> getAllAppointments();
 
     public int getAppointmentNumberToday(Dentist dentist);
 
@@ -29,5 +30,6 @@ public interface IAppointmentService {
     //delete
     public String deleteAppo(Long id);
 
+    public AppointmentDTO setAttributesDto(Appointment appointment);
 
 }

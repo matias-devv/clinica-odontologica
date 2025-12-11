@@ -1,5 +1,6 @@
 package com.floss.odontologia.service.impl;
 
+import com.floss.odontologia.dto.response.AppointmentDTO;
 import com.floss.odontologia.model.Appointment;
 import com.floss.odontologia.model.Dentist;
 import com.floss.odontologia.model.Schedule;
@@ -26,13 +27,21 @@ public class AppointmentService implements IAppointmentService {
     }
 
     @Override
-    public Appointment getAppointmentById(Long id) {
-        return iAppointmentRepository.findById(id).orElse(null);
+    public AppointmentDTO getAppointmentById(Long id) {
+        Appointment appo = iAppointmentRepository.findById(id).orElse(null);
+        return this.setAttributesDto(appo);
     }
 
     @Override
-    public List<Appointment> getAllAppointments() {
-        return iAppointmentRepository.findAll();
+    public List<AppointmentDTO> getAllAppointments() {
+        List<Appointment> list = iAppointmentRepository.findAll();
+        List<AppointmentDTO> listDto = new ArrayList<>();
+
+        for(Appointment appointment : list){
+            AppointmentDTO dto = this.setAttributesDto(appointment);
+            listDto.add(dto);
+        }
+        return listDto;
     }
 
     @Override
@@ -112,7 +121,7 @@ public class AppointmentService implements IAppointmentService {
     @Override
     public List<LocalTime> checkAppointments(LocalDate choosenDate, Dentist dentist, List<LocalTime> hours) {
 
-        List <Appointment> listAppo = this.getAllAppointments();
+        List <Appointment> listAppo = iAppointmentRepository.findAll();
         List <LocalTime> removeHours = new ArrayList<>();
 
         if (!listAppo.isEmpty()){
@@ -158,5 +167,21 @@ public class AppointmentService implements IAppointmentService {
         }catch(Exception e) {
             return "The appointment does not exist in the database";
         }
+    }
+
+    @Override
+    public AppointmentDTO setAttributesDto(Appointment appo) {
+        AppointmentDTO dto = new AppointmentDTO();
+        dto.setId_appointment(appo.getId_appointment());
+        dto.setDate(appo.getDate());
+        dto.setStartTime(appo.getStartTime());
+        dto.setEndTime(appo.getEndTime());
+        dto.setId_dentist(appo.getDentist().getId_dentist());
+        dto.setName_dentist(appo.getDentist().getName());
+        dto.setSurname_dentist(appo.getDentist().getSurname());
+        dto.setId_patient(appo.getPatient().getId_patient());
+        dto.setName_patient(appo.getPatient().getName());
+        dto.setSurname_patient(appo.getPatient().getSurname());
+        return dto;
     }
 }
