@@ -6,9 +6,11 @@ import com.floss.odontologia.repository.IRoleRepository;
 import com.floss.odontologia.repository.IUserRepository;
 import com.floss.odontologia.service.interfaces.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class RoleService implements IRoleService {
 
     @Autowired

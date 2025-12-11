@@ -14,6 +14,7 @@ public class SpecialityService implements ISpecialityService {
     @Autowired
     private ISpecialityRepository iSpecialityRepository;
 
+
     @Override
     public Speciality getSpecialityByName(String name) {
 

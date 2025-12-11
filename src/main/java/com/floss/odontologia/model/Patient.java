@@ -26,11 +26,9 @@ public class Patient {
     private String treatment_type;
 
     @OneToMany (mappedBy = "patient")
-    @JoinColumn(name="id")
     private List<Appointment> appointments;
 
     @OneToMany (mappedBy = "patient")
-    @JoinColumn(name="id")
-    private List<ResponsibleAdult> responsibleAdult;
+    private List<ResponsibleAdult> responsibleAdultList;
 
 }

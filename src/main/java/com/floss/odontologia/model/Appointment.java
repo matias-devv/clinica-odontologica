@@ -12,7 +12,7 @@ public class Appointment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private Long id_appointment;
 
     private LocalDate date;
     private LocalTime startTime;
