@@ -182,8 +182,12 @@ public class AppointmentService implements IAppointmentService {
 
     @Override
     public String editAppo(Appointment appointment) {
-        iAppointmentRepository.save(appointment);
-        return "The appointment was edited correctly";
+        Appointment appo = iAppointmentRepository.findById(appointment.getId_appointment()).orElse(null);
+        if (appo != null) {
+            iAppointmentRepository.save(appointment);
+            return "The appointment was edited correctly";
+        }
+        return "The appointment does not exist";
     }
 
     @Override
