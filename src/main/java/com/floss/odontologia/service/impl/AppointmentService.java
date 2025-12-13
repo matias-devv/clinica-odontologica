@@ -51,18 +51,22 @@ public class AppointmentService implements IAppointmentService {
     }
 
     @Override
-    public int getAppointmentNumberToday(Dentist dentist) {
+    public int getAppointmentNumberToday(Long id) {
+
         int total = 0;
         LocalDate today = LocalDate.now();
-
+        //I find the dentist
+        Dentist dentist = iDentistRepository.findById(id).orElse(null);
         //I'm bringing the dentist appointments
-        List <Appointment> listAppo = dentist.getAppointmentList();
+        if( dentist != null ){
 
-        for (Appointment appo : listAppo){
+            List <Appointment> listAppo = dentist.getAppointmentList();
+            for (Appointment appo : listAppo){
 
-            LocalDate dateAppo = appo.getDate();
-            if (dateAppo.equals(today)){
-                total++;
+                LocalDate dateAppo = appo.getDate();
+                if (dateAppo.equals(today)){
+                    total++;
+                }
             }
         }
         return total;
@@ -71,49 +75,38 @@ public class AppointmentService implements IAppointmentService {
     @Override
     public List<LocalTime> getHoursOfDentist(LocalDate choosenDate, Long id_dentist, String selectedDay) {
         //Max has that amount to prevent it from returning too many time slots.
-        int max = 22;
+        int max = 20;
         int counter = 0;
 
         //I get the schedules of the dentist
         Dentist dentist = iDentistRepository.findById(id_dentist).orElse(null);
-
         if ( dentist != null) {
+
             List<Schedule> schedules = dentist.getSchedulesList();
             List<LocalTime> hours = new ArrayList<>();
-            //I initialize the variable that I'm goint to use to compare with the "date_from" and "date_until"
-            LocalDate today = LocalDate.now();
 
             if (schedules != null) {
                 for (Schedule schedule : schedules) {
-                    //if the schedule is not active -> null
-                    if (!schedule.isActive()) {
-                        return null;
-                    }
-                    //if the day selected and the day in the schedule are not equals -> null
-                    if (!schedule.getDayWeek().equalsIgnoreCase(selectedDay)) {
-                        return null;
-                    }
-                    //if the startTime < endTime && the endTime > startTime -> null
-                    if (!schedule.getStartTime().isBefore(schedule.getEndTime()) && !schedule.getEndTime().isAfter(schedule.getStartTime())) {
-                        return null;
-                    }
-                    //if today is before schedule get date to -> null
-                    if (today.isBefore(schedule.getDate_to())) {
-                        return null;
-                    }
 
-                    //this "slot" is a sort of "accumulator"
-                    LocalTime slot = schedule.getStartTime();
+                    boolean result = this.verifySchedule( schedule, choosenDate, selectedDay);
 
-                    while (slot.isBefore(schedule.getEndTime().minusMinutes(30))) {
-                        //I add 30 minutes to this initial “slot” and add it to the list of “hours.”
-                        slot = slot.plusMinutes(30);
-                        hours.add(slot);
-                        counter++;
-                        System.out.println("contador: " + counter);
-                        //If the slots are over "twenty" I return the list because is too much slots for one work day
-                        if (counter >= max) {
-                            return hours;
+                    //if result is ok
+                    if (result) {
+                        //this "slot" is a sort of "accumulator"
+                        LocalTime slot = schedule.getStartTime();
+
+                        //as long as the "accumulator" is less than the (end time - 30 minutes)
+                        while (slot.isBefore(schedule.getEndTime().minusMinutes(30))) {
+
+                            //I add 30 minutes to this initial “slot” and add it to the list of “hours.”
+                            slot = slot.plusMinutes(30);
+                            hours.add(slot);
+                            counter++;
+
+                            //If the slots are over "twenty" I return the list because is too much slots for one work day
+                            if (counter >= max) {
+                                return hours;
+                            }
                         }
                     }
                 }
@@ -125,11 +118,42 @@ public class AppointmentService implements IAppointmentService {
         return null;
     }
 
+    private boolean verifySchedule(Schedule schedule, LocalDate choosenDate, String selectedDay) {
+        boolean result = true;
+        LocalDate today = LocalDate.now();
+
+            //if the schedule is not active -> null
+            if ( !schedule.isActive()) {
+                return false;
+            }
+            //if the day selected and the day in the schedule(String) are not equals -> null
+            if ( !schedule.getDayWeek().equalsIgnoreCase(selectedDay)) {
+                return false;
+            }
+            //if the startTime < endTime && the endTime > startTime -> null
+            if ( !schedule.getStartTime().isBefore(schedule.getEndTime()) && !schedule.getEndTime().isAfter(schedule.getStartTime())) {
+                return false;
+            }
+            //today must be before the end date(schedule).
+            if ( today.isAfter( schedule.getDate_to() )){
+                return false;
+            }
+            //the choosen date must be after the start date(schedule)
+            if ( !choosenDate.isAfter( schedule.getDate_from() )){
+                return false;
+            }
+            //the choosen date -> dayWeek(String) is not equals comparing with the dayWeek of the schedule(String) ?
+            if ( !choosenDate.getDayOfWeek().toString().equalsIgnoreCase( schedule.getDayWeek() ) ) {
+                return false;
+            }
+        return result;
+    }
+
     @Override
     public List<LocalTime> checkAppointments(LocalDate choosenDate, Dentist dentist, List<LocalTime> hours) {
 
         List <Appointment> listAppo = dentist.getAppointmentList();
-        List <LocalTime> removeHours = new ArrayList<>();
+        List <LocalTime> duplicateAppointments = new ArrayList<>();
 
         //if the appointments are null -> the patient can use the full range of hours in the schedule
         if( listAppo == null){
@@ -141,15 +165,18 @@ public class AppointmentService implements IAppointmentService {
             LocalDate date = appo.getDate();
 
             if( date.equals(choosenDate)){
+                //I go through the received hours of the schedule
                 for (LocalTime slot : hours){
-                    //If the start time of the appointment == the current slot -> remove this slot of the list of hours
+
+                    // If the start time of the current appointment equals the current slot ->
+                    // remove this slot of the list of hours
                     if (appo.getStartTime().equals(slot) ){
-                        removeHours.add(slot);
+                        duplicateAppointments.add(slot);
                     }
                 }
             }
         }
-        hours.removeAll(removeHours);
+        hours.removeAll(duplicateAppointments);
         return hours;
     }
 

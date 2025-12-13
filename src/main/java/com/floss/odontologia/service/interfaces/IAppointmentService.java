@@ -19,9 +19,9 @@ public interface IAppointmentService {
 
     public List<AppointmentDTO> getAllAppointments();
 
-    public int getAppointmentNumberToday(Dentist dentist);
+    public int getAppointmentNumberToday(Long id);
 
-    public List<LocalTime> getHoursOfDentist(LocalDate date, Long id_dentist, String SelectedDay);
+    public List<LocalTime> getHoursOfDentist(LocalDate choosenDate, Long id_dentist, String SelectedDay);
 
     public List<LocalTime> checkAppointments (LocalDate date, Dentist dentist, List<LocalTime> hours);
 

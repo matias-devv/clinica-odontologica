@@ -45,9 +45,9 @@ public class AppointmentController {
         return ResponseEntity.status(404).body("The list of appointments is empty");
     }
 
-    @GetMapping("/appointments-today")
-    public int getAppointmentNumberToday(@RequestBody Dentist dentist){
-        return iAppointmentService.getAppointmentNumberToday(dentist);
+    @GetMapping("/today/{id}")
+    public int getAppointmentNumberToday(@PathVariable Long id){
+        return iAppointmentService.getAppointmentNumberToday(id);
     }
 
     @GetMapping("/hours/{date}/{id_dentist}/{selectedDay}")
@@ -55,11 +55,12 @@ public class AppointmentController {
                                                  @PathVariable LocalDate date,
                                                  @PathVariable  Long id_dentist,
                                                  @PathVariable String selectedDay){
+
         List<LocalTime> hours = iAppointmentService.getHoursOfDentist(date, id_dentist, selectedDay);
-        if( hours != null ){
-            return ResponseEntity.status(200).body(hours);
+        if( hours == null || hours.isEmpty() ){
+            return ResponseEntity.status(404).body("The dentist has no free time");
         }
-        return ResponseEntity.status(404).body("The dentist has no free time");
+        return ResponseEntity.status(200).body(hours);
     }
 
     @PutMapping("/edit")
