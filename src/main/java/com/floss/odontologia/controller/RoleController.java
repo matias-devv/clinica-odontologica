@@ -1,5 +1,6 @@
 package com.floss.odontologia.controller;
 
+import com.floss.odontologia.dto.response.RoleDTO;
 import com.floss.odontologia.model.Role;
 import com.floss.odontologia.service.interfaces.IRoleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ public class RoleController {
 
     @GetMapping("/find-all")
     @ResponseBody
-    public List<Role> findAllRoles(){
+    public List<RoleDTO> findAllRoles(){
         return iRoleService.getListRoles();
     }
 
