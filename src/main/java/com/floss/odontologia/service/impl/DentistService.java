@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class DentistService implements IDentistService {
@@ -34,9 +35,8 @@ public class DentistService implements IDentistService {
     private IScheduleService iScheduleService;
 
     @Override
-    public String createDentist(Dentist dentist) {
+    public void createDentist(Dentist dentist) {
         iDentistRepository.save(dentist);
-        return "The dentist was created successfully";
     }
 
     @Override
@@ -61,14 +61,15 @@ public class DentistService implements IDentistService {
     }
 
     @Override
-    public List<AppointmentDTO> getAppointmentsByDentist(Dentist dentist) {
+    public List<AppointmentDTO> getAppointmentsByDentist(Long id) {
 
         List <AppointmentDTO> AppoListDtos = iAppointmentService.getAllAppointments();
         List <AppointmentDTO> cleanList = new ArrayList<>();
 
         for ( AppointmentDTO appointmentDTO : AppoListDtos){
+
             //If the dentist are the same as the one asigned to the appointment -> add it to the clean list
-            if ( appointmentDTO.getId_dentist() == dentist.getId_dentist()){
+            if ( appointmentDTO.getId_dentist() == id){
                 cleanList.add(appointmentDTO);
             }
         }
@@ -76,7 +77,7 @@ public class DentistService implements IDentistService {
     }
 
     @Override
-    public List<PatientDTO> getPatientsByDentist(Dentist dentist) {
+    public List<PatientDTO> getPatientsByDentist(Long id) {
 
         List <PatientDTO> patientsListDtos = iPatientService.getPatients();
         List <AppointmentDTO> appoListDtos = iAppointmentService.getAllAppointments();
@@ -87,9 +88,28 @@ public class DentistService implements IDentistService {
             for (AppointmentDTO appoDto : appoListDtos){
                 //If the dentist asigned to the appointment is the same as the one that I received && and the patient is the same
                 // -> add it the patient to the cleanList
-                if( appoDto.getId_dentist() == dentist.getId_dentist() && appoDto.getId_patient() == patientDto.getId_patient()){
+                if( appoDto.getId_dentist() == id && appoDto.getId_patient() == patientDto.getId_patient()){
 
                     cleanList.add(patientDto);
+                }
+            }
+        }
+        cleanList = this.avoidDuplicates(cleanList);
+
+        return cleanList;
+    }
+
+    private List<PatientDTO> avoidDuplicates(List<PatientDTO> cleanList) {
+
+        //I go through the entire list
+        for ( int i = 0; i < cleanList.size() - 1 ; i++){
+
+           //If the next patient it's not null
+            if(cleanList.get(i + 1) != null) {
+                //If the current patient and the next has the same id
+                if ( cleanList.get(i).getId_patient() == cleanList.get(i + 1).getId_patient() ) {
+                    //remove the current patient
+                    cleanList.remove(i);
                 }
             }
         }

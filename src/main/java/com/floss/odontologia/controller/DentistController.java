@@ -20,11 +20,6 @@ public class DentistController {
     @Autowired
     private IDentistService iDentistService;
 
-    @PostMapping("/create")
-    public String createDentist(@RequestBody Dentist dentist){
-        return iDentistService.createDentist(dentist);
-    }
-
     @GetMapping("/find/{id}")
     public ResponseEntity<?> findDentistById(@PathVariable Long id){
 
@@ -45,18 +40,19 @@ public class DentistController {
         return ResponseEntity.status(404).body("The list of dentist is empty");
     }
 
-    @GetMapping("/appointments-dentist")
-    public ResponseEntity<?> getAppointmentsByDentist(@RequestBody Dentist dentist){
-        List<AppointmentDTO> listAppoDto = iDentistService.getAppointmentsByDentist(dentist);
+    @GetMapping("/appointments/{id}")
+    public ResponseEntity<?> getAppointmentsByDentist(@PathVariable Long id){
+
+        List<AppointmentDTO> listAppoDto = iDentistService.getAppointmentsByDentist(id);
         if(listAppoDto != null){
             return ResponseEntity.status(200).body(listAppoDto);
         }
         return ResponseEntity.status(404).body("There is no appointment with the given dentist");
     }
 
-    @GetMapping("/patients-dentist")
-    public ResponseEntity<?> getPatientsByDentist(@RequestBody Dentist dentist){
-        List<PatientDTO> listPatientDto = iDentistService.getPatientsByDentist(dentist);
+    @GetMapping("/patients/{id}")
+    public ResponseEntity<?> getPatientsByDentist(@PathVariable Long id){
+        List<PatientDTO> listPatientDto = iDentistService.getPatientsByDentist(id);
         if(listPatientDto != null){
             return ResponseEntity.status(200).body(listPatientDto);
         }
