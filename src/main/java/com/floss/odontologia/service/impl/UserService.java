@@ -1,6 +1,6 @@
 package com.floss.odontologia.service.impl;
 
-import com.floss.odontologia.config.Hashed;
+import com.floss.odontologia.security.config.Hashed;
 import com.floss.odontologia.dto.request.UserDTO;
 import com.floss.odontologia.model.*;
 import com.floss.odontologia.repository.IUserRepository;

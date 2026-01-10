@@ -1,4 +1,4 @@
-package com.floss.odontologia.config;
+package com.floss.odontologia.security.config;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
