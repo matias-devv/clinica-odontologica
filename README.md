@@ -1,4 +1,4 @@
- # Clínica Odontológica – Backend  
+ # Dentify – Backend  
  
 ## 📌 Descripción
 
