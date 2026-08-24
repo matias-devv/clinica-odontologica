@@ -2,6 +2,8 @@
 
 > Living document. Last updated: August 2026. If something changed in the code and not here, the code wins.
 
+![Dentify](dentify-preview.png)
+
 ---
 
 ## 1. Executive summary
